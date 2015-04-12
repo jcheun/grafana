@@ -12,7 +12,9 @@ define([
   'jquery.flot.stack',
   'jquery.flot.stackpercent',
   'jquery.flot.fillbelow',
-  'jquery.flot.crosshair'
+  'jquery.flot.crosshair',
+  'jquery.flot.JUMlib',
+  'jquery.flot.gantt'
 ],
 function (angular, $, kbn, moment, _, GraphTooltip) {
   'use strict';
@@ -192,6 +194,11 @@ function (angular, $, kbn, moment, _, GraphTooltip) {
                 radius: panel.points ? panel.pointradius : 2
                 // little points when highlight points
               },
+              gantt:  {
+                active: panel.gantts,
+                show: panel.gantts,
+                barHeight: 0.75
+              },
               shadowSize: 1
             },
             yaxes: [],
@@ -236,6 +243,17 @@ function (angular, $, kbn, moment, _, GraphTooltip) {
           configureAxisOptions(data, options);
 
           sortedSeries = _.sortBy(data, function(series) { return series.zindex; });
+          sortedSeries = _.sortBy(sortedSeries, function(series) { return series.data[0]; });
+
+          if (panel.gantts) {
+            for (i = 0; i < sortedSeries.length; i++) {
+              for (var j = 0; j < sortedSeries[i].data.length; j++) {
+                sortedSeries[i].data[j].push(sortedSeries[i].data[j][0] + sortedSeries[i].data[j][1]);
+                sortedSeries[i].data[j][1] = i;
+                console.log(sortedSeries[i].data[j],sortedSeries[i].alias);
+              }
+            }
+          }
 
           function callPlot() {
             try {

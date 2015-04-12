@@ -34,6 +34,7 @@ function (_, kbn) {
     this.lines = {};
     this.points = {};
     this.bars = {};
+    this.gantt = {};
     this.yaxis = 1;
     this.zindex = 0;
     delete this.stack;
@@ -46,6 +47,7 @@ function (_, kbn) {
       if (override.lines !== void 0) { this.lines.show = override.lines; }
       if (override.points !== void 0) { this.points.show = override.points; }
       if (override.bars !== void 0) { this.bars.show = override.bars; }
+      if (override.gantt !== void 0) { this.gantt.show = override.gantt; }
       if (override.fill !== void 0) { this.lines.fill = translateFillOption(override.fill); }
       if (override.stack !== void 0) { this.stack = override.stack; }
       if (override.linewidth !== void 0) { this.lines.lineWidth = override.linewidth; }

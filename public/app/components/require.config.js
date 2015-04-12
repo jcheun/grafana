@@ -42,6 +42,8 @@ require.config({
     'jquery.flot.time':       '../vendor/jquery/jquery.flot.time',
     'jquery.flot.crosshair':  '../vendor/jquery/jquery.flot.crosshair',
     'jquery.flot.fillbelow':  '../vendor/jquery/jquery.flot.fillbelow',
+    'jquery.flot.JUMlib':     '../vendor/jquery/jquery.flot.JUMlib',
+    'jquery.flot.gantt':      '../vendor/jquery/jquery.flot.gantt',
 
     modernizr:                '../vendor/modernizr-2.6.1',
 
@@ -89,6 +91,8 @@ require.config({
     'jquery.flot.time':     ['jquery', 'jquery.flot'],
     'jquery.flot.crosshair':['jquery', 'jquery.flot'],
     'jquery.flot.fillbelow':['jquery', 'jquery.flot'],
+    'jquery.flot.JUMlib':   ['jquery', 'jquery.flot'],
+    'jquery.flot.gantt':    ['jquery', 'jquery.flot', 'jquery.flot.JUMlib'],
     'angular-dragdrop':     ['jquery', 'angular'],
     'angular-mocks':        ['angular'],
     'angular-sanitize':     ['angular'],
