@@ -246,15 +246,20 @@ function (angular, $, kbn, moment, _, GraphTooltip) {
           sortedSeries = _.sortBy(sortedSeries, function(series) { return series.data[0]; });
 
           if (panel.gantts) {
+            options.yaxes[0].ticks = [];
             for (i = 0; i < sortedSeries.length; i++) {
               for (var j = 0; j < sortedSeries[i].data.length; j++) {
+                var run_time =sortedSeries[i].data[j][1];
                 sortedSeries[i].data[j].push(sortedSeries[i].data[j][0] + sortedSeries[i].data[j][1]);
                 sortedSeries[i].data[j][1] = i;
-                console.log(sortedSeries[i].data[j],sortedSeries[i].alias);
+                var meta = sortedSeries[i].alias.split(new RegExp("{|}|,", 'g'));
+                sortedSeries[i].label = meta.slice(1, meta.length - 1).concat("Run Time="+ (run_time/1000) +"s");
+                options.yaxes[0].ticks.push([i,meta[1].split('=')[1]]);
               }
             }
           }
 
+          console.log(sortedSeries);
           function callPlot() {
             try {
               $.plot(elem, sortedSeries, options);
