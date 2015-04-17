@@ -253,12 +253,15 @@ function (angular, $, kbn, moment, _, GraphTooltip) {
                 sortedSeries[i].data[j].push(sortedSeries[i].data[j][0] + sortedSeries[i].data[j][1]);
                 sortedSeries[i].data[j][1] = i;
                 var meta = sortedSeries[i].alias.split(new RegExp("{|}|,", 'g'));
-                sortedSeries[i].label = meta.slice(1, meta.length - 1).concat("Run Time="+ (run_time/1000) +"s");
                 options.yaxes[0].ticks.push([i,meta[1].split('=')[1]]);
+                meta = meta.slice(1, meta.length -1);
+                sortedSeries[i].label = ""
+                for (var k = 0; k < meta.length; k++)
+                  sortedSeries[i].label = sortedSeries[i].label + "<br>" + meta[k]
+                sortedSeries[i].label = sortedSeries[i].label + "<br>" + "Run Time=" + (run_time/1000) + "s"
               }
             }
           }
-
           console.log(sortedSeries);
           function callPlot() {
             try {
