@@ -65,6 +65,17 @@ function (angular, $, kbn, moment, _, GraphTooltip) {
           render_panel();
         });
 
+        function getLegendHeight() {
+          if (!scope.panel.legend.show || scope.panel.legend.rightSide) {
+            return 0;
+          }
+          if (scope.panel.legend.alignAsTable) {
+            return 30 + (25 * data.length);
+          } else {
+            return 26;
+          }
+        }
+
         function setElementHeight() {
           try {
             graphHeight = scope.height || scope.panel.height || scope.row.height;
@@ -75,9 +86,7 @@ function (angular, $, kbn, moment, _, GraphTooltip) {
             graphHeight -= 5; // padding
             graphHeight -= scope.panel.title ? 24 : 9; // subtract panel title bar
 
-            if (scope.panel.legend.show && !scope.panel.legend.rightSide) {
-              graphHeight = graphHeight - 26; // subtract one line legend
-            }
+            graphHeight = graphHeight - getLegendHeight(); // subtract one line legend
 
             elem.css('height', graphHeight + 'px');
 
@@ -117,7 +126,7 @@ function (angular, $, kbn, moment, _, GraphTooltip) {
             var formater = kbn.valueFormats[scope.panel.y_formats[series.yaxis - 1]];
 
             // decimal override
-            if (scope.panel.decimals) {
+            if (_.isNumber(scope.panel.decimals)) {
               series.updateLegendValues(formater, scope.panel.decimals, null);
             } else {
               // auto decimals
