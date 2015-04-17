@@ -264,10 +264,11 @@ function (angular, $, kbn, moment, _, GraphTooltip) {
                 var meta = sortedSeries[i].alias.split(new RegExp("{|}|,", 'g'));
                 options.yaxes[0].ticks.push([i,meta[1].split('=')[1]]);
                 meta = meta.slice(1, meta.length -1);
-                sortedSeries[i].label = ""
-                for (var k = 0; k < meta.length; k++)
-                  sortedSeries[i].label = sortedSeries[i].label + "<br>" + meta[k]
-                sortedSeries[i].label = sortedSeries[i].label + "<br>" + "Run Time=" + (run_time/1000) + "s"
+                sortedSeries[i].label = "";
+                for (var k = 0; k < meta.length; k++) {
+                  sortedSeries[i].label = sortedSeries[i].label + "<br>" + meta[k];
+                }
+                sortedSeries[i].label = sortedSeries[i].label + "<br>" + "Run Time=" + (run_time/1000) + "s";
               }
             }
           }
