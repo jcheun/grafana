@@ -139,7 +139,7 @@ function ($) {
       else if (item) {
         series = seriesList[item.seriesIndex];
         group = '<div class="graph-tooltip-list-item"><div class="graph-tooltip-series-name">';
-        group += '<i class="fa fa-minus" style="color:' + item.series.color +';"></i>' + series.label + ':</div>';
+        group += '<i class="fa fa-minus" style="color:' + item.series.color +';"></i>' + series.label + '</div>';
 
         if (scope.panel.stack && scope.panel.tooltip.value_type === 'individual') {
           value = item.datapoint[1] - item.datapoint[2];
@@ -150,7 +150,7 @@ function ($) {
 
         value = series.formatValue(value);
         timestamp = dashboard.formatDate(item.datapoint[0]);
-        group += '<div class="graph-tooltip-value">' + value + '</div>';
+        group += '<div class="graph-tooltip-value">:' + value + '</div>';
 
         self.showTooltip(timestamp, group, pos);
       }
