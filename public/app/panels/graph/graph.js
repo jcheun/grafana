@@ -5,6 +5,7 @@ define([
   'moment',
   'lodash',
   './graph.tooltip',
+  'components/timeSeries',
   'jquery.flot',
   'jquery.flot.events',
   'jquery.flot.selection',
@@ -16,7 +17,7 @@ define([
   'jquery.flot.JUMlib',
   'jquery.flot.gantt'
 ],
-function (angular, $, kbn, moment, _, GraphTooltip) {
+function (angular, $, kbn, moment, _, GraphTooltip, TimeSeries) {
   'use strict';
 
   var module = angular.module('grafana.directives');
@@ -230,6 +231,21 @@ function (angular, $, kbn, moment, _, GraphTooltip) {
             }
           };
 
+          // Seperate series with mutiple datapoints
+          if (panel.gantts) {
+            var m_timeSeries = _.filter(data, function(timeSeries) { return timeSeries.datapoints.length > 1; });
+            m_timeSeries.forEach(function(series) {
+              series.datapoints.forEach(function(datapoint) {
+                var timeSeries = new TimeSeries({
+                  datapoints: [datapoint],
+                  alias: series.alias,
+                  color: series.color,
+                });
+                data.push(timeSeries);
+              });
+            });
+          }
+          
           for (var i = 0; i < data.length; i++) {
             var series = data[i];
             series.applySeriesOverrides(panel.seriesOverrides);
@@ -252,27 +268,50 @@ function (angular, $, kbn, moment, _, GraphTooltip) {
           configureAxisOptions(data, options);
 
           sortedSeries = _.sortBy(data, function(series) { return series.zindex; });
-          sortedSeries = _.sortBy(sortedSeries, function(series) { return series.data[0]; });
 
           if (panel.gantts) {
+            // Filter Valid TimeSeries
+            sortedSeries = _.filter(sortedSeries, function(series) { return series.data.length == 1; });
             options.yaxes[0].ticks = [];
+            var y_tags = [];
+
+            // Create Y Axis
+            sortedSeries.forEach(function(series) {
+              var tags = series.alias.split(new RegExp("{|}|,", 'g'));
+              if (tags.length > 1)  {
+                var tag   = tags[1].split('=')[1];
+                if (y_tags.indexOf(tag) == -1) {
+                  y_tags.push(tag);
+                }
+              }
+            });
+
+            y_tags = _.sortBy(y_tags, function(tags) { return tags; }).reverse();  
+            for (i = 0; i < y_tags.length; i++) {
+              options.yaxes[0].ticks.push([i, y_tags[i]]);                        
+            }
+
+            // Transform Data for Gantt Chart
             for (i = 0; i < sortedSeries.length; i++) {
-              for (var j = 0; j < sortedSeries[i].data.length; j++) {
-                var run_time =sortedSeries[i].data[j][1];
-                sortedSeries[i].data[j].push(sortedSeries[i].data[j][0] + sortedSeries[i].data[j][1]);
-                sortedSeries[i].data[j][1] = i;
-                var meta = sortedSeries[i].alias.split(new RegExp("{|}|,", 'g'));
-                options.yaxes[0].ticks.push([i,meta[1].split('=')[1]]);
-                meta = meta.slice(1, meta.length -1);
+              var tags = sortedSeries[i].alias.split(new RegExp("{|}|,", 'g'));
+              if (tags.length > 1)  {
+                var tag   = tags[1].split('=')[1];
+
+                // Caculate End Time
+                var run_time = sortedSeries[i].data[0][1];
+                sortedSeries[i].data[0].push(sortedSeries[i].data[0][0] + sortedSeries[i].data[0][1]);
+                sortedSeries[i].data[0][1] = y_tags.indexOf(tag);
+
+                // Create Annotations
                 sortedSeries[i].label = "";
-                for (var k = 0; k < meta.length; k++) {
-                  sortedSeries[i].label = sortedSeries[i].label + "<br>" + meta[k];
+                for (var k = 0; k < tags.length; k++) {
+                  sortedSeries[i].label = sortedSeries[i].label + "<br>" + tags[k];
                 }
                 sortedSeries[i].label = sortedSeries[i].label + "<br>" + "Run Time=" + (run_time/1000) + "s";
               }
             }
           }
-          console.log(sortedSeries);
+
           function callPlot() {
             try {
               $.plot(elem, sortedSeries, options);
