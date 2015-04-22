@@ -272,42 +272,48 @@ function (angular, $, kbn, moment, _, GraphTooltip, TimeSeries) {
           if (panel.gantts) {
             // Filter Valid TimeSeries
             sortedSeries = _.filter(sortedSeries, function(series) { return series.data.length == 1; });
-            options.yaxes[0].ticks = [];
+            sortedSeries = _.sortBy(sortedSeries, function(series) { return -series.data[0][0]; });
+
+            var tag_k = Object.keys(panel.targets[0].tags);
             var y_tags = [];
+            options.yaxes[0].ticks = [];
+            panel.grid.sortBy = panel.grid.sortBy || tag_k[0];
 
             // Create Y Axis
             sortedSeries.forEach(function(series) {
-              var tags = series.alias.split(new RegExp("{|}|,", 'g'));
-              if (tags.length > 1)  {
-                var tag   = tags[1].split('=')[1];
-                if (y_tags.indexOf(tag) == -1) {
-                  y_tags.push(tag);
+              if (tag_k.length) {
+                var tag_v= series.alias.split(new RegExp("{|}|,|=| ", 'g')); 
+                tag_v = tag_v[tag_v.indexOf(panel.grid.sortBy) + 1];
+                if (y_tags.indexOf(tag_v) == -1) {
+                  y_tags.push(tag_v);
                 }
               }
             });
+            
+            if (!panel.sortBy_sTime)
+                y_tags = _.sortBy(y_tags, function(tags) { return tags; }).reverse();  
 
-            y_tags = _.sortBy(y_tags, function(tags) { return tags; }).reverse();  
             for (i = 0; i < y_tags.length; i++) {
               options.yaxes[0].ticks.push([i, y_tags[i]]);                        
             }
-
+            
             // Transform Data for Gantt Chart
             for (i = 0; i < sortedSeries.length; i++) {
-              var tags = sortedSeries[i].alias.split(new RegExp("{|}|,", 'g'));
-              if (tags.length > 1)  {
-                var tag   = tags[1].split('=')[1];
+              var tag_v= sortedSeries[i].alias.split(new RegExp("{|}|,|=| ", 'g')); 
+              tag_v = _.filter(tag_v, function(tag) { return tag.length; });
 
+              if (tag_v.length)  {
                 // Caculate End Time
                 var run_time = sortedSeries[i].data[0][1];
                 sortedSeries[i].data[0].push(sortedSeries[i].data[0][0] + sortedSeries[i].data[0][1]);
-                sortedSeries[i].data[0][1] = y_tags.indexOf(tag);
+                sortedSeries[i].data[0][1] = y_tags.indexOf(tag_v[tag_v.indexOf(panel.grid.sortBy) + 1]);
 
                 // Create Annotations
                 sortedSeries[i].label = "";
-                for (var k = 0; k < tags.length; k++) {
-                  sortedSeries[i].label = sortedSeries[i].label + "<br>" + tags[k];
+                for (var k = 1; k < tag_v.length; k+=2) {
+                  sortedSeries[i].label = sortedSeries[i].label + "<br>" + tag_v[k] + " = " + tag_v[k + 1];
                 }
-                sortedSeries[i].label = sortedSeries[i].label + "<br>" + "Run Time=" + (run_time/1000) + "s";
+                sortedSeries[i].label = sortedSeries[i].label + "<br>" + "Run Time = " + (run_time/1000) + "s";
               }
             }
           }

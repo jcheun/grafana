@@ -7,9 +7,19 @@
 					<strong>Left Y</strong>
 				</li>
 				<li class="tight-form-item">
+					Sort By Start Time&nbsp;
+					<input class="cr1" id="sortBysTime" type="checkbox"
+					ng-model="panel['sortBy_sTime']" ng-checked="panel['sortBy_sTime']" ng-change="render()">
+					<label for="sortBysTime" class="cr1"></label>
+				</li>
+				<li class="tight-form-item">
 					Unit
 				</li>
+				<li>
+					<select class="input-small tight-form-input" style="width: 113px" ng-show="panel.gantts" ng-model="panel.grid.sortBy" ng-options="k as k for (k, v) in panel.targets[0].tags" ng-change="render()"></select>
+				</li>
 				<li class="dropdown" style="width: 140px;"
+                    ng-hide="panel.gantts"
 					ng-model="panel.y_formats[0]"
 					dropdown-typeahead="unitFormats"
 					dropdown-typeahead-on-select="setUnitFormat(0, $subItem)">
