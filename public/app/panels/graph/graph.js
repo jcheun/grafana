@@ -304,16 +304,14 @@ function (angular, $, kbn, moment, _, GraphTooltip, TimeSeries) {
 
               if (tag_v.length)  {
                 // Caculate End Time
-                var run_time = sortedSeries[i].data[0][1];
                 sortedSeries[i].data[0].push(sortedSeries[i].data[0][0] + sortedSeries[i].data[0][1]);
                 sortedSeries[i].data[0][1] = y_tags.indexOf(tag_v[tag_v.indexOf(panel.grid.sortBy) + 1]);
 
                 // Create Annotations
-                sortedSeries[i].label = "";
-                for (var k = 1; k < tag_v.length; k+=2) {
-                  sortedSeries[i].label = sortedSeries[i].label + "<br>" + tag_v[k] + " = " + tag_v[k + 1];
+                sortedSeries[i].label = "&nbsp;" + tag_v[1] + " = " + tag_v[2];
+                for (var k = 3; k < tag_v.length; k+=2) {
+                  sortedSeries[i].label = sortedSeries[i].label + "<br>&nbsp;&nbsp;&nbsp;&nbsp;" + tag_v[k] + " = " + tag_v[k + 1];
                 }
-                sortedSeries[i].label = sortedSeries[i].label + "<br>" + "Run Time = " + (run_time/1000) + "s";
               }
             }
           }
