@@ -5,6 +5,7 @@ function ($) {
   'use strict';
 
   function GraphTooltip(elem, dashboard, scope, getSeriesFn) {
+    console.log(elem);
     var self = this;
 
     var $tooltip = $('<div id="tooltip">');
@@ -96,6 +97,7 @@ function ($) {
     });
 
     elem.bind("plothover", function (event, pos, item) {
+      console.log(item);
       var plot = elem.data().plot;
       var plotData = plot.getData();
       var seriesList = getSeriesFn();
@@ -147,11 +149,12 @@ function ($) {
         else {
           value = item.datapoint[1];
         }
-
+        
+        if(scope.panel.gantts) { value = item.series.data[0][2] - item.series.data[0][0] };
         value = series.formatValue(value);
         timestamp = dashboard.formatDate(item.datapoint[0]);
-        group += '<div class="graph-tooltip-value">:' + value + '</div>';
-
+        if (scope.panel.gantts) group += '<div class="graph-tooltip-value">Runtime: ' + value + '</div>';
+        else group += '<div class="graph-tooltip-value">:' + value + '</div>';
         self.showTooltip(timestamp, group, pos);
       }
       // no hit
