@@ -5,6 +5,7 @@ function ($) {
   'use strict';
 
   function GraphTooltip(elem, dashboard, scope, getSeriesFn) {
+    console.log(elem);
     var self = this;
 
     var $tooltip = $('<div id="tooltip">');
@@ -96,6 +97,7 @@ function ($) {
     });
 
     elem.bind("plothover", function (event, pos, item) {
+      console.log(item);
       var plot = elem.data().plot;
       var plotData = plot.getData();
       var seriesList = getSeriesFn();
