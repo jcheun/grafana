@@ -245,7 +245,7 @@ function (angular, $, kbn, moment, _, GraphTooltip, TimeSeries) {
               });
             });
           }
-          
+
           for (var i = 0; i < data.length; i++) {
             var series = data[i];
             series.applySeriesOverrides(panel.seriesOverrides);
@@ -271,8 +271,8 @@ function (angular, $, kbn, moment, _, GraphTooltip, TimeSeries) {
 
           if (panel.gantts) {
             // Filter Valid TimeSeries
-            sortedSeries = _.filter(sortedSeries, function(series) { return series.data.length == 1; });
-            sortedSeries = _.sortBy(sortedSeries, function(series) { return -series.data[0][0]; });
+            sortedSeries = _.filter(sortedSeries, function(series) { return series.data.length === 1; });
+            sortedSeries = _.sortBy(sortedSeries, function(series) { return series.data[0][0]; });
 
             var tag_k = Object.keys(panel.targets[0].tags);
             var y_tags = [];
@@ -282,24 +282,26 @@ function (angular, $, kbn, moment, _, GraphTooltip, TimeSeries) {
             // Create Y Axis
             sortedSeries.forEach(function(series) {
               if (tag_k.length) {
-                var tag_v= series.alias.split(new RegExp("{|}|,|=| ", 'g')); 
+                var tag_v= series.alias.split(new RegExp("{|}|,|=| ", 'g'));
                 tag_v = tag_v[tag_v.indexOf(panel.grid.sortBy) + 1];
-                if (y_tags.indexOf(tag_v) == -1) {
+                if (y_tags.indexOf(tag_v) === -1) {
                   y_tags.push(tag_v);
                 }
               }
             });
-            
-            if (!panel.sortBy_sTime)
-                y_tags = _.sortBy(y_tags, function(tags) { return tags; }).reverse();  
+
+            if (!panel.sortBy_sTime) {
+              y_tags = _.sortBy(y_tags, function(tags) { return tags; });
+            }
+            y_tags = y_tags.reverse();
 
             for (i = 0; i < y_tags.length; i++) {
-              options.yaxes[0].ticks.push([i, y_tags[i]]);                        
+              options.yaxes[0].ticks.push([i, y_tags[i]]);
             }
-            
+
             // Transform Data for Gantt Chart
             for (i = 0; i < sortedSeries.length; i++) {
-              var tag_v= sortedSeries[i].alias.split(new RegExp("{|}|,|=| ", 'g')); 
+              var tag_v= sortedSeries[i].alias.split(new RegExp("{|}|,|=| ", 'g'));
               tag_v = _.filter(tag_v, function(tag) { return tag.length; });
 
               if (tag_v.length)  {
