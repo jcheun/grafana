@@ -15,7 +15,8 @@ define([
   'jquery.flot.fillbelow',
   'jquery.flot.crosshair',
   'jquery.flot.JUMlib',
-  'jquery.flot.gantt'
+  'jquery.flot.gantt',
+  'jquery.flot.mouse',
 ],
 function (angular, $, kbn, moment, _, GraphTooltip, TimeSeries) {
   'use strict';
@@ -207,7 +208,8 @@ function (angular, $, kbn, moment, _, GraphTooltip, TimeSeries) {
               gantt:  {
                 active: panel.gantts,
                 show: panel.gantts,
-                barHeight: 0.75
+                barHeight: 0.75,
+                x_hoveroffset: 5
               },
               shadowSize: 1
             },
@@ -298,6 +300,7 @@ function (angular, $, kbn, moment, _, GraphTooltip, TimeSeries) {
             for (i = 0; i < y_tags.length; i++) {
               options.yaxes[0].ticks.push([i, y_tags[i]]);
             }
+            console.log(sortedSeries);
 
             // Transform Data for Gantt Chart
             for (i = 0; i < sortedSeries.length; i++) {

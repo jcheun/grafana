@@ -5,7 +5,6 @@ function ($) {
   'use strict';
 
   function GraphTooltip(elem, dashboard, scope, getSeriesFn) {
-    console.log(elem);
     var self = this;
 
     var $tooltip = $('<div id="tooltip">');
@@ -97,7 +96,6 @@ function ($) {
     });
 
     elem.bind("plothover", function (event, pos, item) {
-      console.log(item);
       var plot = elem.data().plot;
       var plotData = plot.getData();
       var seriesList = getSeriesFn();
@@ -141,7 +139,7 @@ function ($) {
       else if (item) {
         series = seriesList[item.seriesIndex];
         group = '<div class="graph-tooltip-list-item"><div class="graph-tooltip-series-name">';
-        group += '<i class="fa fa-minus" style="color:' + item.series.color +';"></i>' + series.label + '</div>';
+        group += '<i class="fa fa-minus" style="color:' + item.series.color +';"></i>' + series.label + ':</div>';
 
         if (scope.panel.stack && scope.panel.tooltip.value_type === 'individual') {
           value = item.datapoint[1] - item.datapoint[2];
@@ -154,7 +152,7 @@ function ($) {
         value = series.formatValue(value);
         timestamp = dashboard.formatDate(item.datapoint[0]);
         if (scope.panel.gantts) group += '<div class="graph-tooltip-value">Runtime: ' + value + '</div>';
-        else group += '<div class="graph-tooltip-value">:' + value + '</div>';
+        else group += '<div class="graph-tooltip-value">' + value + '</div>';
         self.showTooltip(timestamp, group, pos);
       }
       // no hit

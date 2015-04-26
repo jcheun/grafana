@@ -33,7 +33,11 @@ THE SOFTWARE.
                 connectSteps: { show: false, lineWidth:2, color:"rgb(0,0,0)" },
                 barHeight: 0.6,
                 highlight: { opacity: 0.5 },
-                drawstep: drawStepDefault
+                drawstep: drawStepDefault,
+                minWidth: 0.5,
+                x_hoveroffset: 0,
+                y_hoveroffset: 0
+                
             }
         }
     };
@@ -50,20 +54,22 @@ THE SOFTWARE.
         }   
     };
     function drawStepDefault(ctx,series,data,x,y,x2,color, isHighlight){
-        if(isHighlight === false){
+        if(isHighlight){
             ctx.beginPath();
-            ctx.lineWidth = series.gantt.barheight;
-            ctx.strokeStyle = "rgb(0,0,0)";
-            ctx.moveTo(x, y);
-            ctx.lineTo(x2, y);
+            ctx.strokeStyle = color;
+            ctx.lineWidth = series.gantt.barheight + 4;
+            ctx.lineCap = "butt";
+            ctx.moveTo(x - 2, y);
+            ctx.lineTo(x2 + 2, y);
             ctx.stroke();
         }
+
         ctx.beginPath();
-        ctx.strokeStyle = color;
-        ctx.lineWidth = series.gantt.barheight - 2;
+        ctx.strokeStyle = series.color;
+        ctx.lineWidth = series.gantt.barheight;
         ctx.lineCap = "butt";
-        ctx.moveTo(x + 1, y);
-        ctx.lineTo(x2 - 1, y);
+        ctx.moveTo(x, y);
+        ctx.lineTo(Math.max(x2, x + series.gantt.minWidth), y);
         ctx.stroke();
     }
     function init(plot) {
@@ -152,7 +158,11 @@ THE SOFTWARE.
                         var dataitem = serie.data[j];
                         var dx = serie.xaxis.p2c(dataitem[0]),dx2 = serie.xaxis.p2c(dataitem[2]),
                         dy = Math.abs(serie.yaxis.p2c(dataitem[1]) - mouseY);
-                        if(dy <= serie.gantt.barheight / 2){ if(between(mouseX,dx,dx2)){ item = [i,j]; } }
+                        if(dy <= serie.gantt.barheight / 2){ 
+                            if(between(mouseX,dx - serie.gantt.x_hoveroffset ,dx2 +  serie.gantt.x_hoveroffset)){ 
+                                item = [i,j]; 
+                            }
+                        }
                     }
                 }
                 return item;
@@ -185,7 +195,20 @@ THE SOFTWARE.
             var data;
             octx.save();
             octx.translate(-offset.left,-offset.top);
-            var c = "rgba(255,255,255, " + serie.gantt.highlight.opacity + ")";
+            if (serie.color) {
+                var color = serie.color.split(/[\s,rgb()#]+/);
+                if (color.length === 2) {
+                    color = parseInt(color[1],16);
+                    var r = (color >> 16) & 255;
+                    var g = (color >> 8)& 255;
+                    var b = color & 255;
+                    var c = "rgba(" + r + "," + g + "," + b + "," + serie.gantt.highlight.opacity + ")";
+                } else {
+                    var c = "rgba(" + color[1] + "," + color[2] + "," + color[3] + "," + serie.gantt.highlight.opacity + ")";
+                }
+            } else {
+                var c = "rgba(255,255,255, " + serie.gantt.highlight.opacity + ")";
+            }
             if(dataIndex.length){ data = serie.data[dataIndex[0]];} else{ data = serie.data[dataIndex];}
             drawData(octx,serie,data,c,true);
             octx.restore();

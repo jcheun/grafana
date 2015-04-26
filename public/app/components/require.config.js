@@ -44,6 +44,7 @@ require.config({
     'jquery.flot.fillbelow':  '../vendor/jquery/jquery.flot.fillbelow',
     'jquery.flot.JUMlib':     '../vendor/jquery/jquery.flot.JUMlib',
     'jquery.flot.gantt':      '../vendor/jquery/jquery.flot.gantt',
+    'jquery.flot.mouse':      '../vendor/jquery/jquery.flot.mouse',
 
     modernizr:                '../vendor/modernizr-2.6.1',
 
@@ -93,6 +94,7 @@ require.config({
     'jquery.flot.fillbelow':['jquery', 'jquery.flot'],
     'jquery.flot.JUMlib':   ['jquery', 'jquery.flot'],
     'jquery.flot.gantt':    ['jquery', 'jquery.flot', 'jquery.flot.JUMlib'],
+    'jquery.flot.mouse':    ['jquery', 'jquery.flot', 'jquery.flot.JUMlib'],
     'angular-dragdrop':     ['jquery', 'angular'],
     'angular-mocks':        ['angular'],
     'angular-sanitize':     ['angular'],

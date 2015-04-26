@@ -6,7 +6,7 @@
 				<li class="tight-form-item" style="width: 80px">
 					<strong>Left Y</strong>
 				</li>
-				<li class="tight-form-item" ng-hide="panel.gantts">
+				<li class="tight-form-item" ng-show="panel.gantts">
 					Sort By Start Time&nbsp;
 					<input class="cr1" id="sortBysTime" type="checkbox"
 					ng-model="panel['sortBy_sTime']" ng-checked="panel['sortBy_sTime']" ng-change="render()">
