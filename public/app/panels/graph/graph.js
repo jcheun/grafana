@@ -209,6 +209,7 @@ function (angular, $, kbn, moment, _, GraphTooltip, TimeSeries) {
                 active: panel.gantts,
                 show: panel.gantts,
                 barHeight: 0.75,
+                minWidth: 2.5,
                 x_hoveroffset: 5
               },
               shadowSize: 1
@@ -278,6 +279,7 @@ function (angular, $, kbn, moment, _, GraphTooltip, TimeSeries) {
 
             var tag_k = Object.keys(panel.targets[0].tags);
             var y_tags = [];
+            options.yaxes[0].min = -0.5;
             options.yaxes[0].ticks = [];
             panel.grid.sortBy = panel.grid.sortBy || tag_k[0];
 

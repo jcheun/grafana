@@ -147,12 +147,12 @@ function ($) {
         else {
           value = item.datapoint[1];
         }
-        
-        if(scope.panel.gantts) { value = item.series.data[0][2] - item.series.data[0][0] };
+
+        if (scope.panel.gantts) { value = item.series.data[0][2] - item.series.data[0][0]; }
         value = series.formatValue(value);
         timestamp = dashboard.formatDate(item.datapoint[0]);
-        if (scope.panel.gantts) group += '<div class="graph-tooltip-value">Runtime: ' + value + '</div>';
-        else group += '<div class="graph-tooltip-value">' + value + '</div>';
+        if (scope.panel.gantts) { group += '<div class="graph-tooltip-value">Runtime: ' + value + '</div>'; }
+        else { group += '<div class="graph-tooltip-value">' + value + '</div>'; }
         self.showTooltip(timestamp, group, pos);
       }
       // no hit
