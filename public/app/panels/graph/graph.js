@@ -272,14 +272,25 @@ function (angular, $, kbn, moment, _, GraphTooltip, TimeSeries) {
           sortedSeries = _.sortBy(data, function(series) { return series.zindex; });
 
           if (panel.gantts) {
+
             // Filter Valid TimeSeries
             sortedSeries = _.filter(sortedSeries, function(series) { return series.data.length === 1; });
             sortedSeries = _.sortBy(sortedSeries, function(series) { return series.data[0][0]; });
+            if (panel.grid.gantthres !== undefined) {
+              console.log(panel.grid.gantthres);
+            
+              var descrip = kbn.describe_interval(panel.grid.gantthres);
+              var msthres = descrip.sec * descrip.count * 1000;
+              console.log(msthres);
+              sortedSeries = _.filter(sortedSeries, function(series) { return series.data[0][1] >= msthres; }); 
+            }
 
             var tag_k = Object.keys(panel.targets[0].tags);
             var y_tags = [];
             options.yaxes[0].ticks = [];
             panel.grid.sortBy = panel.grid.sortBy || tag_k[0];
+
+
 
             // Create Y Axis
             sortedSeries.forEach(function(series) {
@@ -300,7 +311,6 @@ function (angular, $, kbn, moment, _, GraphTooltip, TimeSeries) {
             for (i = 0; i < y_tags.length; i++) {
               options.yaxes[0].ticks.push([i, y_tags[i]]);
             }
-            console.log(sortedSeries);
 
             // Transform Data for Gantt Chart
             for (i = 0; i < sortedSeries.length; i++) {
