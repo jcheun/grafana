@@ -276,12 +276,16 @@ function (angular, $, kbn, moment, _, GraphTooltip, TimeSeries) {
             // Filter Valid TimeSeries
             sortedSeries = _.filter(sortedSeries, function(series) { return series.data.length === 1; });
             sortedSeries = _.sortBy(sortedSeries, function(series) { return series.data[0][0]; });
+
+            //Filter out threshold faults
             if (panel.grid.gantthres !== undefined) {
-              console.log(panel.grid.gantthres);
-            
-              var descrip = kbn.describe_interval(panel.grid.gantthres);
-              var msthres = descrip.sec * descrip.count * 1000;
-              console.log(msthres);
+              var msthres;
+              if(!isNaN(panel.grid.gantthres)) {
+                msthres = parseInt(panel.grid.gantthres);
+              } else {
+                var descrip = kbn.describe_interval(panel.grid.gantthres);
+                msthres = descrip.sec * descrip.count * 1000;
+              }
               sortedSeries = _.filter(sortedSeries, function(series) { return series.data[0][1] >= msthres; }); 
             }
 
@@ -289,8 +293,6 @@ function (angular, $, kbn, moment, _, GraphTooltip, TimeSeries) {
             var y_tags = [];
             options.yaxes[0].ticks = [];
             panel.grid.sortBy = panel.grid.sortBy || tag_k[0];
-
-
 
             // Create Y Axis
             sortedSeries.forEach(function(series) {
