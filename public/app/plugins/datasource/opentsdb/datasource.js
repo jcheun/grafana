@@ -52,6 +52,7 @@ function (angular, _, kbn) {
           index = metricToTargetMapping[index];
           return transformMetricData(metricData, groupByTags, options.targets[index]);
         });
+        result = _.filter(result, function(series) { return series.datapoints != 0; });
         return { data: result };
       });
     };
@@ -172,7 +173,11 @@ function (angular, _, kbn) {
       query.tags = angular.copy(target.tags);
       if(query.tags){
         for(var key in query.tags){
-          query.tags[key] = templateSrv.replace(query.tags[key]);
+          if (templateSrv.replace(query.tags[key]) === '?') {
+            delete query.tags[key];
+          } else {
+            query.tags[key] = templateSrv.replace(query.tags[key]);
+          }
         }
       }
 

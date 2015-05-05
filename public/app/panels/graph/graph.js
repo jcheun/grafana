@@ -279,7 +279,6 @@ function (angular, $, kbn, moment, _, GraphTooltip, TimeSeries) {
 
             var tag_k = Object.keys(panel.targets[0].tags);
             var y_tags = [];
-            options.yaxes[0].min = -0.5;
             options.yaxes[0].ticks = [];
             panel.grid.sortBy = panel.grid.sortBy || tag_k[0];
 
@@ -294,6 +293,10 @@ function (angular, $, kbn, moment, _, GraphTooltip, TimeSeries) {
               }
             });
 
+            options.yaxes[0].max = (y_tags.length == 1) ?  2 : y_tags.length - 0.5;
+            options.yaxes[0].min = (y_tags.length == 1) ? -2 : -0.5;
+
+            console.log(y_tags.length)
             if (!panel.sortBy_sTime) {
               y_tags = _.sortBy(y_tags, function(tags) { return tags; });
             }
@@ -302,7 +305,6 @@ function (angular, $, kbn, moment, _, GraphTooltip, TimeSeries) {
             for (i = 0; i < y_tags.length; i++) {
               options.yaxes[0].ticks.push([i, y_tags[i]]);
             }
-            console.log(sortedSeries);
 
             // Transform Data for Gantt Chart
             for (i = 0; i < sortedSeries.length; i++) {
