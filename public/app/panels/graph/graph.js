@@ -273,9 +273,22 @@ function (angular, $, kbn, moment, _, GraphTooltip, TimeSeries) {
           sortedSeries = _.sortBy(data, function(series) { return series.zindex; });
 
           if (panel.gantts) {
+
             // Filter Valid TimeSeries
             sortedSeries = _.filter(sortedSeries, function(series) { return series.data.length === 1; });
             sortedSeries = _.sortBy(sortedSeries, function(series) { return series.data[0][0]; });
+
+            //Filter out threshold faults
+            if (panel.grid.gantthres !== undefined) {
+              var msthres;
+              if(!isNaN(panel.grid.gantthres)) {
+                msthres = parseInt(panel.grid.gantthres);
+              } else {
+                var descrip = kbn.describe_interval(panel.grid.gantthres);
+                msthres = descrip.sec * descrip.count * 1000;
+              }
+              sortedSeries = _.filter(sortedSeries, function(series) { return series.data[0][1] >= msthres; }); 
+            }
 
             var tag_k = Object.keys(panel.targets[0].tags);
             var y_tags = [];
