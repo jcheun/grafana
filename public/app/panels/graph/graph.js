@@ -279,7 +279,7 @@ function (angular, $, kbn, moment, _, GraphTooltip, TimeSeries) {
             sortedSeries = _.sortBy(sortedSeries, function(series) { return series.data[0][0]; });
 
             //Filter out threshold faults
-            if (panel.grid.gantthres !== undefined) {
+            if (panel.grid.gantthres) {
               var msthres;
               if(!isNaN(panel.grid.gantthres)) {
                 msthres = parseInt(panel.grid.gantthres);
